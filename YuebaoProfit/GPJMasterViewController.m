@@ -7,8 +7,10 @@
 //
 
 #import "GPJMasterViewController.h"
-
-#import "GPJDetailViewController.h"
+#import "GPJYuebaoClient.h"
+#import "GPJModel.h"
+#import "GPJProfitViewController.h"
+#import "GPJCashInViewController.h"
 
 @interface GPJMasterViewController () {
     NSMutableArray *_objects;
@@ -25,11 +27,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
+    
+    [self initializeData];
+    [self.tableView reloadData];
+    
+//    [[GPJYuebaoClient sharedClient] fetchNetValueOfDate:[NSDate date] success:^(double netValue) {
+//        NSLog(@"%s,%d net value: %f",__FUNCTION__,__LINE__,netValue);
+//    } failed:^(NSError *error) {
+//        NSLog(@"%s,%d failed: %@",__FUNCTION__,__LINE__,error);
+//    }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -38,14 +44,62 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)insertNewObject:(id)sender
+#pragma mark - Model
+
+- (void)initializeData
 {
-    if (!_objects) {
-        _objects = [[NSMutableArray alloc] init];
-    }
-    [_objects insertObject:[NSDate date] atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    _objects = [[NSMutableArray alloc] init];
+    
+    GPJCashInDate* cashIn = nil;
+    cashIn = [[GPJCashInDate alloc] initWithDateString:@"2013-11-17"];
+    cashIn.capital = 192.0f;
+    [_objects addObject:cashIn];
+
+    double totalCapital = cashIn.capital;
+    
+    cashIn = [[GPJCashInDate alloc] initWithDateString:@"2013-11-18"];
+    cashIn.capital = 15000.0f;
+    [_objects addObject:cashIn];
+    
+    totalCapital += cashIn.capital;
+    
+    GPJProfitDate* profitDate = nil;
+    
+    profitDate = [[GPJProfitDate alloc] initWithDateString:@"2013-11-20"];
+    profitDate.capital = totalCapital;
+    profitDate.netRate = 1.3377f;
+    profitDate.profit = 0.0f;
+    [_objects addObject:profitDate];
+    
+    profitDate = [[GPJProfitDate alloc] initWithDateString:@"2013-11-21"];
+    profitDate.capital = totalCapital;
+    profitDate.netRate = 1.3352f;
+    profitDate.profit = 0.0f;
+    [_objects addObject:profitDate];
+    
+    profitDate = [[GPJProfitDate alloc] initWithDateString:@"2013-11-22"];
+    profitDate.capital = totalCapital;
+    profitDate.netRate = 1.3442f;
+    profitDate.profit = 0.0f;
+    [_objects addObject:profitDate];
+    
+    profitDate = [[GPJProfitDate alloc] initWithDateString:@"2013-11-23"];
+    profitDate.capital = totalCapital;
+    profitDate.netRate = 1.3502f;
+    profitDate.profit = 0.0f;
+    [_objects addObject:profitDate];
+    
+    profitDate = [[GPJProfitDate alloc] initWithDateString:@"2013-11-24"];
+    profitDate.capital = totalCapital;
+    profitDate.netRate = 1.3469f;
+    profitDate.profit = 0.0f;
+    [_objects addObject:profitDate];
+    
+    [_objects sortWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(id obj1, id obj2) {
+        GPJDate* date1 = obj1;
+        GPJDate* date2 = obj2;
+        return [date2.date compare:date1.date];
+    }];
 }
 
 #pragma mark - Table View
@@ -69,45 +123,23 @@
     return cell;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+    GPJDate *object = _objects[indexPath.row];
+    
+    if([object isKindOfClass:[GPJCashInDate class]])
+        [self performSegueWithIdentifier:@"CashInDetail" sender:nil];
+    else if([object isKindOfClass:[GPJProfitDate class]])
+        [self performSegueWithIdentifier:@"ProfitDetail" sender:nil];
+    else
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [_objects removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-    }
-}
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSDate *object = _objects[indexPath.row];
-        [[segue destinationViewController] setDetailItem:object];
-    }
+    NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+    GPJDate *object = _objects[indexPath.row];
+    [(id)[segue destinationViewController] setDetailDate:object];
 }
 
 @end
