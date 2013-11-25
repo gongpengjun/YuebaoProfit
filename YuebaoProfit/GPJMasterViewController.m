@@ -31,11 +31,12 @@
     [self initializeData];
     [self.tableView reloadData];
     
-//    [[GPJYuebaoClient sharedClient] fetchNetValueOfDate:[NSDate date] success:^(double netValue) {
-//        NSLog(@"%s,%d net value: %f",__FUNCTION__,__LINE__,netValue);
-//    } failed:^(NSError *error) {
-//        NSLog(@"%s,%d failed: %@",__FUNCTION__,__LINE__,error);
-//    }];
+    NSDate* yesterDay = [NSDate dateWithTimeIntervalSinceNow:-24*60*60];
+    [[GPJYuebaoClient sharedClient] fetchNetValueOfDate:yesterDay success:^(double netValue) {
+        NSLog(@"%s,%d net value: %f",__FUNCTION__,__LINE__,netValue);
+    } failed:^(NSError *error) {
+        NSLog(@"%s,%d failed: %@",__FUNCTION__,__LINE__,error);
+    }];
 }
 
 - (void)didReceiveMemoryWarning

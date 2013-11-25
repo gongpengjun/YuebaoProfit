@@ -45,11 +45,11 @@ NSString * const kYuebaoBaseURLString = @"http://www.thfund.com.cn/";
             NSNumber * netNumber = [numberFormatter numberFromString:netString];
             netValue = [netNumber doubleValue];
             //NSLog(@"%s,%d net number: <%@ %@>",__FUNCTION__,__LINE__,NSStringFromClass([netNumber class]),netNumber);
+            success(netValue);
         } @catch(NSException* e) {
             NSLog(@"%s,%d exception %@",__FUNCTION__,__LINE__,e);
-            netValue = 1.0;
+            failed(nil);
         } @finally {
-            success(netValue);
         }
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         failed(error);
