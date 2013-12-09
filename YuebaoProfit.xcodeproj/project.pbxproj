@@ -79,6 +79,8 @@
 		C43E6243184244B3006FDF18 /* GPJCashInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPJCashInViewController.h; sourceTree = "<group>"; };
 		C43E6244184244B3006FDF18 /* GPJCashInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPJCashInViewController.m; sourceTree = "<group>"; };
 		C43E624818424631006FDF18 /* GPJModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPJModel.h; sourceTree = "<group>"; };
+		C49A45F11856140400613503 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		C49A45F21856140400613503 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -264,6 +266,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = C43E61C91841EA65006FDF18;
 			productRefGroup = C43E61D31841EA65006FDF18 /* Products */;
@@ -374,6 +377,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				C43E61DF1841EA65006FDF18 /* en */,
+				C49A45F11856140400613503 /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -390,6 +394,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				C43E62011841EA65006FDF18 /* en */,
+				C49A45F21856140400613503 /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
